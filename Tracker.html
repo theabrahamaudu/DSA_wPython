@@ -1,0 +1,242 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DSA 14-Day Tracker</title>
+
+<style>
+
+body{
+font-family: Arial, sans-serif;
+background:#f4f6f9;
+margin:0;
+padding:0;
+}
+
+.container{
+max-width:900px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 6px 15px rgba(0,0,0,0.1);
+}
+
+h1{
+text-align:center;
+margin-bottom:10px;
+}
+
+.stats{
+display:flex;
+justify-content:space-between;
+margin-bottom:20px;
+font-size:14px;
+}
+
+.progress-container{
+background:#e0e0e0;
+height:22px;
+border-radius:20px;
+margin-bottom:20px;
+}
+
+.progress-bar{
+height:22px;
+width:0%;
+background:#4CAF50;
+border-radius:20px;
+text-align:center;
+color:white;
+font-size:13px;
+line-height:22px;
+}
+
+.day{
+display:grid;
+grid-template-columns: 40px 80px 1fr 80px;
+gap:10px;
+padding:12px;
+border-bottom:1px solid #eee;
+align-items:center;
+}
+
+.day:hover{
+background:#f9f9f9;
+}
+
+.day input{
+transform:scale(1.2);
+}
+
+.header{
+font-weight:bold;
+background:#fafafa;
+}
+
+.hours{
+font-weight:bold;
+color:#444;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>14-Day DSA Course Tracker</h1>
+
+<div class="stats">
+<div><b>Total Course Duration:</b> 49 hrs</div>
+<div><b>Hours Completed:</b> <span id="hoursDone">0</span></div>
+<div><b>Days Completed:</b> <span id="daysDone">0</span>/14</div>
+</div>
+
+<div class="progress-container">
+<div class="progress-bar" id="progressBar">0%</div>
+</div>
+
+<div class="day header">
+<div></div>
+<div>Day</div>
+<div>Topics</div>
+<div>Hours</div>
+</div>
+
+<div id="tracker">
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 1</div>
+<div>Intro, Big-O, Time & Space Complexity, Start Arrays</div>
+<div class="hours">3</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 2</div>
+<div>Finish Arrays, Sliding Window</div>
+<div class="hours">4</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 3</div>
+<div>Two Pointers, Strings</div>
+<div class="hours">3.5</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 4</div>
+<div>Sorting & Searching (Binary Search)</div>
+<div class="hours">3.5</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 5</div>
+<div>Linked Lists, Stack</div>
+<div class="hours">3</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 6</div>
+<div>Queue, Priority Queue</div>
+<div class="hours">2.5</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 7</div>
+<div>Trees (Start)</div>
+<div class="hours">4</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 8</div>
+<div>Finish Trees, Start Graphs</div>
+<div class="hours">4</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 9</div>
+<div>Graphs BFS / DFS</div>
+<div class="hours">4</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 10</div>
+<div>Dynamic Programming (Start)</div>
+<div class="hours">4</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 11</div>
+<div>Finish Dynamic Programming, Greedy</div>
+<div class="hours">3.5</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 12</div>
+<div>Intervals, Backtracking</div>
+<div class="hours">3</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 13</div>
+<div>Math, Geometry, Matrix</div>
+<div class="hours">2.5</div>
+</div>
+
+<div class="day">
+<input type="checkbox" onchange="updateProgress()">
+<div>Day 14</div>
+<div>Design Problems, Bit Manipulation, Final Review</div>
+<div class="hours">2</div>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function updateProgress(){
+
+let rows = document.querySelectorAll("#tracker .day")
+let checkboxes = document.querySelectorAll("#tracker input")
+let checked = document.querySelectorAll("#tracker input:checked")
+
+let hours = 0
+
+checked.forEach(box=>{
+let row = box.parentElement
+hours += parseFloat(row.querySelector(".hours").innerText)
+})
+
+let percent = Math.round((hours / 49) * 100)
+
+document.getElementById("progressBar").style.width = percent + "%"
+document.getElementById("progressBar").innerText = percent + "%"
+
+document.getElementById("hoursDone").innerText = hours + " hrs"
+document.getElementById("daysDone").innerText = checked.length
+
+}
+
+</script>
+
+</body>
+</html>
+```

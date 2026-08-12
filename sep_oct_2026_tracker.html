@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DSA Code-Along Tracker — Sep 1 to Oct 31, 2026</title>
+<style>
+:root {
+  --bg:#f5f7fb; --card:#fff; --text:#172033; --muted:#667085;
+  --border:#e4e7ec; --accent:#4f46e5; --accent-soft:#eef2ff;
+  --green:#15803d; --green-soft:#ecfdf3; --orange:#b45309; --orange-soft:#fffbeb;
+}
+* {box-sizing:border-box}
+body {margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.container {max-width:1250px;margin:auto;padding:28px 18px 60px}
+h1 {font-size:clamp(27px,4vw,40px);margin:0 0 6px}
+h2 {margin:0 0 10px;font-size:20px}
+.subtitle {color:var(--muted);margin:0 0 20px;line-height:1.5}
+.grid {display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.card,.panel {background:var(--card);border:1px solid var(--border);border-radius:14px}
+.card {padding:16px}
+.panel {padding:18px;margin-top:14px}
+.label {font-size:13px;color:var(--muted)}
+.value {font-size:25px;font-weight:800;margin-top:4px}
+.stats {display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+.statline {display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:9px 0 5px}
+.barbg {height:11px;background:#e9edf5;border-radius:99px;overflow:hidden}
+.bar {height:100%;width:0;background:var(--accent);transition:.2s}
+.note {color:var(--muted);line-height:1.6}
+.callout {background:var(--accent-soft);border:1px solid #c7d2fe;padding:14px;border-radius:10px;line-height:1.55}
+table {width:100%;border-collapse:collapse}
+.tablewrap {overflow:auto;border:1px solid var(--border);border-radius:11px}
+th,td {padding:10px;border-bottom:1px solid var(--border);text-align:left;vertical-align:middle}
+th {background:#fafafa;font-size:13px;position:sticky;top:0;z-index:2}
+tr:hover {background:#fafcff}
+.muted {color:var(--muted);font-size:12px}
+input[type=checkbox] {width:19px;height:19px;cursor:pointer}
+.actual {width:70px;padding:7px;border:1px solid var(--border);border-radius:7px}
+.badge {display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.03em}
+.code {background:var(--green-soft);color:var(--green)}
+.practice {background:var(--orange-soft);color:var(--orange)}
+.completed {opacity:.58}
+.completed td:nth-child(2),.completed td:nth-child(5) {text-decoration:line-through}
+button {border:1px solid var(--border);background:#fff;padding:9px 12px;border-radius:8px;cursor:pointer}
+button:hover {background:#f8fafc}
+details summary {cursor:pointer;font-weight:700}
+@media(max-width:850px) {.grid{grid-template-columns:1fr 1fr} .stats{grid-template-columns:1fr}}
+@media(max-width:500px) {.grid{grid-template-columns:1fr 1fr} .container{padding:18px 10px}}
+</style>
+</head>
+<body>
+<div class="container">
+<h1>DSA Code-Along Tracker</h1>
+<p class="subtitle"><strong>September 1 → October 31, 2026</strong> · Weekdays: 1 hour · Weekends: 2 hours · Java course, implemented in Python</p>
+
+<div class="grid">
+  <div class="card"><div class="label">Study days</div><div class="value">61</div></div>
+  <div class="card"><div class="label">Committed time</div><div class="value">78 hrs</div></div>
+  <div class="card"><div class="label">Course</div><div class="value">48h 48m</div></div>
+  <div class="card"><div class="label">Extra learning time</div><div class="value">≈29 hrs</div></div>
+</div>
+
+<div class="panel">
+<h2>Your strategy</h2>
+<div class="callout">
+<strong>Do not separate “watching” and “coding.”</strong> The course is your code-along session.
+<br><br>
+<strong>Watch → pause → translate the Java implementation into Python → run it → experiment → continue.</strong>
+<br><br>
+If a 30-minute course section takes you 50 minutes because you are coding properly, <strong>that is a successful session</strong>. The tracker measures your commitment by clock time, not by how quickly you consume video.
+</div>
+</div>
+
+<div class="panel">
+<h2>Progress</h2>
+<div class="stats">
+  <div>
+    <div class="statline"><span>Days completed</span><strong id="days">0 / 61</strong></div>
+    <div class="barbg"><div class="bar" id="daybar"></div></div>
+  </div>
+  <div>
+    <div class="statline"><span>Actual study time</span><strong><span id="actual">0</span> / 78 hrs</strong></div>
+    <div class="barbg"><div class="bar" id="actualbar"></div></div>
+  </div>
+  <div>
+    <div class="statline"><span>Course progress</span><strong><span id="course">0</span> / 48.8 hrs</strong></div>
+    <div class="barbg"><div class="bar" id="coursebar"></div></div>
+  </div>
+</div>
+<p class="note">The course timestamp column tells you where to aim to finish that day's code-along. If you naturally stop at a concept boundary slightly earlier or later, that's fine—continue from there the next day.</p>
+<button onclick="resetTracker()">Reset all progress</button>
+</div>
+
+<div class="panel">
+<h2>September & October daily plan</h2>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Done</th><th>Day / Date</th><th>Mode</th><th>Commit</th><th>Course focus + timestamp target</th><th>Session method</th><th>Actual</th></tr></thead>
+<tbody>
+    <tr data-date="2026-09-01" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 1</strong><br><span class="muted">Sep 01, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Introduction / Interview 101 / Big O<br><span class="muted">00:00:00 → 00:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-02" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 2</strong><br><span class="muted">Sep 02, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Arrays<br><span class="muted">00:37:30 → 01:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-03" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 3</strong><br><span class="muted">Sep 03, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Arrays<br><span class="muted">01:15:00 → 01:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-04" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 4</strong><br><span class="muted">Sep 04, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Arrays<br><span class="muted">01:52:30 → 02:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-05" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 5</strong><br><span class="muted">Sep 05, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Arrays<br><span class="muted">02:30:00 → 03:45:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-06" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 6</strong><br><span class="muted">Sep 06, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Sliding Window<br><span class="muted">03:45:00 → 05:00:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-07" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 7</strong><br><span class="muted">Sep 07, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Two Pointers<br><span class="muted">05:00:00 → 05:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-08" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 8</strong><br><span class="muted">Sep 08, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Two Pointers<br><span class="muted">05:37:30 → 06:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-09" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 9</strong><br><span class="muted">Sep 09, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Two Pointers<br><span class="muted">06:15:00 → 06:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-10" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 10</strong><br><span class="muted">Sep 10, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Strings<br><span class="muted">06:52:30 → 07:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-11" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 11</strong><br><span class="muted">Sep 11, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Strings<br><span class="muted">07:30:00 → 08:07:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-12" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 12</strong><br><span class="muted">Sep 12, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Sorting & Searching<br><span class="muted">08:07:30 → 09:22:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-13" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 13</strong><br><span class="muted">Sep 13, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Sorting & Searching<br><span class="muted">09:22:30 → 10:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-14" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 14</strong><br><span class="muted">Sep 14, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Sorting & Searching<br><span class="muted">10:37:30 → 11:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-15" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 15</strong><br><span class="muted">Sep 15, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Linked List<br><span class="muted">11:15:00 → 11:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-16" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 16</strong><br><span class="muted">Sep 16, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Linked List<br><span class="muted">11:52:30 → 12:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-17" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 17</strong><br><span class="muted">Sep 17, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Linked List<br><span class="muted">12:30:00 → 13:07:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-18" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 18</strong><br><span class="muted">Sep 18, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Linked List<br><span class="muted">13:07:30 → 13:45:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-19" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 19</strong><br><span class="muted">Sep 19, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Stack<br><span class="muted">13:45:00 → 15:00:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-20" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 20</strong><br><span class="muted">Sep 20, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Stack<br><span class="muted">15:00:00 → 16:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-21" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 21</strong><br><span class="muted">Sep 21, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Stack<br><span class="muted">16:15:00 → 16:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-22" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 22</strong><br><span class="muted">Sep 22, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Queue<br><span class="muted">16:52:30 → 17:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-23" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 23</strong><br><span class="muted">Sep 23, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Queue<br><span class="muted">17:30:00 → 18:07:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-24" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 24</strong><br><span class="muted">Sep 24, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Priority Queue<br><span class="muted">18:07:30 → 18:45:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-25" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 25</strong><br><span class="muted">Sep 25, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Priority Queue<br><span class="muted">18:45:00 → 19:22:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-26" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 26</strong><br><span class="muted">Sep 26, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Priority Queue<br><span class="muted">19:22:30 → 20:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-27" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 27</strong><br><span class="muted">Sep 27, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Trees<br><span class="muted">20:37:30 → 21:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-28" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 28</strong><br><span class="muted">Sep 28, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Trees<br><span class="muted">21:52:30 → 22:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-29" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 29</strong><br><span class="muted">Sep 29, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Trees<br><span class="muted">22:30:00 → 23:07:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-09-30" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 30</strong><br><span class="muted">Sep 30, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Trees<br><span class="muted">23:07:30 → 23:45:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-01" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 31</strong><br><span class="muted">Oct 01, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Trees<br><span class="muted">23:45:00 → 24:22:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-02" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 32</strong><br><span class="muted">Oct 02, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Trees<br><span class="muted">24:22:30 → 25:00:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-03" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 33</strong><br><span class="muted">Oct 03, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Graph<br><span class="muted">25:00:00 → 26:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-04" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 34</strong><br><span class="muted">Oct 04, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Graph<br><span class="muted">26:15:00 → 27:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-05" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 35</strong><br><span class="muted">Oct 05, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Graph<br><span class="muted">27:30:00 → 28:07:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-06" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 36</strong><br><span class="muted">Oct 06, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Graph<br><span class="muted">28:07:30 → 28:45:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-07" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 37</strong><br><span class="muted">Oct 07, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Graph<br><span class="muted">28:45:00 → 29:22:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-08" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 38</strong><br><span class="muted">Oct 08, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Graph<br><span class="muted">29:22:30 → 30:00:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-09" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 39</strong><br><span class="muted">Oct 09, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Graph<br><span class="muted">30:00:00 → 30:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-10" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 40</strong><br><span class="muted">Oct 10, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Graph<br><span class="muted">30:37:30 → 31:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-11" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 41</strong><br><span class="muted">Oct 11, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Dynamic Programming<br><span class="muted">31:52:30 → 33:07:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-12" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 42</strong><br><span class="muted">Oct 12, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Dynamic Programming<br><span class="muted">33:07:30 → 33:45:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-13" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 43</strong><br><span class="muted">Oct 13, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Dynamic Programming<br><span class="muted">33:45:00 → 34:22:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-14" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 44</strong><br><span class="muted">Oct 14, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Dynamic Programming<br><span class="muted">34:22:30 → 35:00:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-15" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 45</strong><br><span class="muted">Oct 15, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Dynamic Programming<br><span class="muted">35:00:00 → 35:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-16" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 46</strong><br><span class="muted">Oct 16, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Dynamic Programming<br><span class="muted">35:37:30 → 36:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-17" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 47</strong><br><span class="muted">Oct 17, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Dynamic Programming<br><span class="muted">36:15:00 → 37:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-18" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 48</strong><br><span class="muted">Oct 18, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Greedy<br><span class="muted">37:30:00 → 38:45:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-19" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 49</strong><br><span class="muted">Oct 19, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Greedy<br><span class="muted">38:45:00 → 39:22:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-20" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 50</strong><br><span class="muted">Oct 20, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Interval<br><span class="muted">39:22:30 → 40:00:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-21" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 51</strong><br><span class="muted">Oct 21, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Interval<br><span class="muted">40:00:00 → 40:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-22" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 52</strong><br><span class="muted">Oct 22, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Backtracking<br><span class="muted">40:37:30 → 41:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-23" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 53</strong><br><span class="muted">Oct 23, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Backtracking<br><span class="muted">41:15:00 → 41:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-24" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 54</strong><br><span class="muted">Oct 24, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Backtracking<br><span class="muted">41:52:30 → 43:07:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-25" data-target="2" data-course="1.2500">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 55</strong><br><span class="muted">Oct 25, Sunday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Matrix<br><span class="muted">43:07:30 → 44:22:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-26" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 56</strong><br><span class="muted">Oct 26, Monday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Matrix<br><span class="muted">44:22:30 → 45:00:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-27" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 57</strong><br><span class="muted">Oct 27, Tuesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Matrix<br><span class="muted">45:00:00 → 45:37:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-28" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 58</strong><br><span class="muted">Oct 28, Wednesday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Design<br><span class="muted">45:37:30 → 46:15:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-29" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 59</strong><br><span class="muted">Oct 29, Thursday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Design<br><span class="muted">46:15:00 → 46:52:30</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-30" data-target="1" data-course="0.6250">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 60</strong><br><span class="muted">Oct 30, Friday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>1h</strong></td>
+      <td>Design<br><span class="muted">46:52:30 → 47:30:00</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    
+    <tr data-date="2026-10-31" data-target="2" data-course="1.3047">
+      <td><input type="checkbox" class="done"></td>
+      <td><strong>Day 61</strong><br><span class="muted">Oct 31, Saturday</span></td>
+      <td><span class="badge code">CODE ALONG</span></td>
+      <td><strong>2h</strong></td>
+      <td>Bit Manipulation / Final Message<br><span class="muted">47:30:00 → 48:48:17</span></td>
+      <td>Watch → pause → implement in Python → run/test → continue</td>
+      <td><input type="number" class="actual" min="0" max="12" step="0.25" placeholder="0"></td>
+    </tr>
+    </tbody>
+</table>
+</div>
+</div>
+
+<div class="panel">
+<details>
+<summary>Course chapter timestamps</summary>
+<br>
+<div class="tablewrap">
+<table>
+<thead><tr><th>#</th><th>Chapter</th><th>Start</th><th>End</th><th>Duration</th></tr></thead>
+<tbody>
+    <tr><td>1</td><td>Introduction / Interview 101 / Big O</td><td>0:00:00</td><td>0:50:21</td><td>0.8h</td></tr>
+    
+    <tr><td>2</td><td>Arrays</td><td>0:50:21</td><td>3:29:02</td><td>2.6h</td></tr>
+    
+    <tr><td>3</td><td>Sliding Window</td><td>3:29:02</td><td>5:09:48</td><td>1.7h</td></tr>
+    
+    <tr><td>4</td><td>Two Pointers</td><td>5:09:48</td><td>7:00:25</td><td>1.8h</td></tr>
+    
+    <tr><td>5</td><td>Strings</td><td>7:00:25</td><td>8:29:27</td><td>1.5h</td></tr>
+    
+    <tr><td>6</td><td>Sorting & Searching</td><td>8:29:27</td><td>11:28:48</td><td>3.0h</td></tr>
+    
+    <tr><td>7</td><td>Linked List</td><td>11:28:48</td><td>14:08:48</td><td>2.7h</td></tr>
+    
+    <tr><td>8</td><td>Stack</td><td>14:08:48</td><td>16:43:55</td><td>2.6h</td></tr>
+    
+    <tr><td>9</td><td>Queue</td><td>16:43:55</td><td>17:58:08</td><td>1.2h</td></tr>
+    
+    <tr><td>10</td><td>Priority Queue</td><td>17:58:08</td><td>20:55:54</td><td>3.0h</td></tr>
+    
+    <tr><td>11</td><td>Trees</td><td>20:55:54</td><td>25:20:01</td><td>4.4h</td></tr>
+    
+    <tr><td>12</td><td>Graph</td><td>25:20:01</td><td>32:14:13</td><td>6.9h</td></tr>
+    
+    <tr><td>13</td><td>Dynamic Programming</td><td>32:14:13</td><td>37:13:04</td><td>5.0h</td></tr>
+    
+    <tr><td>14</td><td>Greedy</td><td>37:13:04</td><td>39:06:36</td><td>1.9h</td></tr>
+    
+    <tr><td>15</td><td>Interval</td><td>39:06:36</td><td>40:32:39</td><td>1.4h</td></tr>
+    
+    <tr><td>16</td><td>Backtracking</td><td>40:32:39</td><td>42:45:51</td><td>2.2h</td></tr>
+    
+    <tr><td>17</td><td>Math & Geometry</td><td>42:45:51</td><td>43:42:30</td><td>0.9h</td></tr>
+    
+    <tr><td>18</td><td>Matrix</td><td>43:42:30</td><td>45:55:06</td><td>2.2h</td></tr>
+    
+    <tr><td>19</td><td>Design</td><td>45:55:06</td><td>47:22:33</td><td>1.5h</td></tr>
+    
+    <tr><td>20</td><td>Bit Manipulation / Final Message</td><td>47:22:33</td><td>48:48:17</td><td>1.4h</td></tr>
+    </tbody>
+</table>
+</div>
+</details>
+</div>
+
+<div class="panel">
+<h2>Rules for the two months</h2>
+<p class="note">
+<strong>1. Code everything.</strong> Don't passively watch the Java implementation. Recreate it in Python yourself.<br>
+<strong>2. Don't translate line-for-line blindly.</strong> Learn the Pythonic equivalent where appropriate: list, dict, set, deque, heapq, etc.<br>
+<strong>3. Don't chase the timestamp.</strong> The timestamp is a guide, not a deadline. Understanding beats completion speed.<br>
+<strong>4. Use the extra hours deliberately.</strong> Once the course is finished, use the remaining commitment for independent problems and reimplementation from memory.<br>
+<strong>5. Difficult topics get extra time.</strong> Trees, Graphs and Dynamic Programming deserve slower code-along sessions.
+</p>
+</div>
+</div>
+
+<script>
+const KEY="dsa_codealong_sep_oct_2026";
+const rows=[...document.querySelectorAll("tbody tr[data-date]")];
+
+function save(){
+  const state={};
+  rows.forEach(r=>state[r.dataset.date]={
+    done:r.querySelector(".done").checked,
+    actual:r.querySelector(".actual").value
+  });
+  localStorage.setItem(KEY,JSON.stringify(state));
+}
+
+function update(){
+  let days=0,actual=0,course=0;
+  rows.forEach(r=>{
+    const done=r.querySelector(".done").checked;
+    const val=parseFloat(r.querySelector(".actual").value)||0;
+    if(done) days++;
+    actual+=val;
+    if(done) course+=parseFloat(r.dataset.course)||0;
+    r.classList.toggle("completed",done);
+  });
+  document.getElementById("days").textContent=days+" / 61";
+  document.getElementById("actual").textContent=actual.toFixed(1);
+  document.getElementById("course").textContent=course.toFixed(1);
+  document.getElementById("daybar").style.width=(days/61*100)+"%";
+  document.getElementById("actualbar").style.width=Math.min(actual/78*100,100)+"%";
+  document.getElementById("coursebar").style.width=Math.min(course/48.803*100,100)+"%";
+  save();
+}
+
+function load(){
+  const state=JSON.parse(localStorage.getItem(KEY)||"{}");
+  rows.forEach(r=>{
+    const x=state[r.dataset.date];
+    if(x){
+      r.querySelector(".done").checked=!!x.done;
+      r.querySelector(".actual").value=x.actual||"";
+    }
+  });
+  update();
+}
+
+function resetTracker(){
+  if(!confirm("Reset all saved progress?")) return;
+  localStorage.removeItem(KEY);
+  rows.forEach(r=>{
+    r.querySelector(".done").checked=false;
+    r.querySelector(".actual").value="";
+  });
+  update();
+}
+
+document.querySelectorAll(".done,.actual").forEach(el=>{
+  el.addEventListener("change",update);
+  el.addEventListener("input",update);
+});
+load();
+</script>
+</body>
+</html>
